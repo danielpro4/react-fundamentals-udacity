@@ -1,5 +1,5 @@
 import React from 'react'
-import {BrowserRouter, Route, Link} from "react-router-dom"
+import {BrowserRouter, Route} from "react-router-dom"
 import Bookshelf from './Bookshelf/Bookshelf'
 import Search from './Search/Search'
 import * as BooksAPI from './BooksAPI'
@@ -24,6 +24,14 @@ class BooksApp extends React.Component {
   }
 
   render = () => {
+    const shelvesTitles = [...new Set(this.state.books.map(book => book.shelf))];
+    const props = {
+        "shelvesTitles": shelvesTitles,
+        "books": this.state.books,
+        "title": "My reads",
+        "getBooks": this.getBooks
+    }
+
     return (
         <BrowserRouter>
             <div className="app">
@@ -32,21 +40,7 @@ class BooksApp extends React.Component {
                 )} />
 
                 <Route path="/" exact render={()=>(
-                    <div className="list-books">
-                      <div className="list-books-title">
-                        <h1>MyReads</h1>
-                      </div>
-                      <div className="list-books-content">
-                        <div>
-                          <Bookshelf getBooks={this.getBooks} title="Currently Reading" books={this.state.books.filter( book => book.shelf === "currentlyReading" ) } />
-                          <Bookshelf getBooks={this.getBooks} title="Want to Read" books={this.state.books.filter( book => book.shelf === "wantToRead" ) } />
-                          <Bookshelf getBooks={this.getBooks} title="Read" books={this.state.books.filter( book => book.shelf === "read" ) } />
-                        </div>
-                      </div>
-                      <div className="open-search">
-                        <Link to={"/search"}>Add a book</Link>
-                      </div>
-                    </div>
+                    <Bookshelf {...props} />
                 )} />
             </div>
         </BrowserRouter>      
